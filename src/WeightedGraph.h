@@ -140,6 +140,23 @@ namespace csi281 {
             // from class, from your book, and you are free to
             // use other pseudocode as long as you cite it. Please
             // do not look at other C++ solutions.
+			while (!frontier.empty())
+			{
+				int current = frontier.pop();
+				float distances = weights[current];
+
+				for (int i = 0; i < parents[current]; i++)
+				{
+					float oldDistance = weights[i];
+
+					if (oldDistance == nullopt || oldDistance > weights[i] + distances)
+					{
+						weights[i] = weights[i] + distances;
+						weights[i] = i;
+						frontier.push(i, weights + distances);
+					}
+				}
+			}
             
             return make_pair(parents, weights);
         }
