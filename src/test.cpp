@@ -1,3 +1,4 @@
+//  Nathan Kruger
 //
 //  test.cpp
 //
@@ -173,3 +174,50 @@ TEST_CASE( "dijkstra() cityGraph2 Test", "[dijksta]" ) {
 // reuse cityGraph or cityGraph2. Cite any sources.
 // Make sure that your assertions are fairly comprehensive.
 // Look at the prior two tests as examples.
+TEST_CASE("dijkstra() summerRoadtripCities Test", "[dijkstra]")
+{
+	WeightedGraph<string, int> roadtripCities = WeightedGraph<string, int>();
+	roadtripCities.addEdge("Syracuse", "Pittsburgh", 361);
+	roadtripCities.addEdge("Syracuse", "Saint Paul", 1087);
+	roadtripCities.addEdge("Pittsburgh", "Saint Paul", 870);
+	roadtripCities.addEdge("Pittsburgh", "Indianapolis", 360);
+	roadtripCities.addEdge("Indianapolis", "St Louis", 242);
+	roadtripCities.addEdge("St Louis", "El Reno", 526);
+	roadtripCities.addEdge("St Louis", "Denver", 850);
+	roadtripCities.addEdge("El Reno", "Amarillo", 233);
+	roadtripCities.addEdge("Amarillo", "Albuquerque", 289);
+	roadtripCities.addEdge("Albuquerque", "Prescott", 416);
+	roadtripCities.addEdge("Albuquerque", "Denver", 449);
+	roadtripCities.addEdge("Prescott", "Los Angeles", 379);
+	roadtripCities.addEdge("Prescott", "Las Vegas", 255);
+	roadtripCities.addEdge("Las Vegas", "Los Angeles", 270);
+	roadtripCities.addEdge("Las Vegas", "Denver", 748);
+	roadtripCities.addEdge("Los Angeles", "Saint Paul", 1929);
+	roadtripCities.addEdge("Denver", "Saint Paul", 917);
+	cout << "------roadtripCities------" << endl;
+	roadtripCities.debugPrint();
+	auto resultPair = roadtripCities.dijkstra("Syracuse");
+	auto parentResults = resultPair.first;
+	auto weightResults = resultPair.second;
+	// are the distances from Syracuse correct?
+	CHECK(weightResults["St Louis"] == 963);
+	CHECK(weightResults["Denver"] == 1813);
+	CHECK(weightResults["Saint Paul"] == 1087);
+	CHECK(weightResults["Albuquerque"] == 2011);
+	auto path = roadtripCities.pathMapToPath(parentResults, "Los Angeles");
+	cout << "------roadtripCities path------" << endl;
+	printPath(path);
+	// Shortest path should be
+	// St Louis -> El Reno -> Amarillo -> Albuquerque -> Prescott -> Los Angeles
+	CHECK(path.size() == 6);
+	CHECK(path.front() == "St Louis");
+	CHECK(path.back() == "Los Angeles");
+	auto it = path.begin();
+	auto last = path.front();
+	for (unsigned long i = 1; i < path.size(); i++) {
+		it++;
+		auto current = *it;
+		CHECK(roadtripCities.edgeExists(last, current));
+		last = current;
+	}
+}
