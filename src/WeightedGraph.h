@@ -1,3 +1,4 @@
+// Nathan Kruger
 //
 //  WeightedGraph.h
 //  
@@ -142,17 +143,19 @@ namespace csi281 {
             // do not look at other C++ solutions.
 			while (!frontier.empty())
 			{
-				int current = frontier.pop();
+				int current = frontier.top();
+				frontier.pop();
 				float distances = weights[current];
 
-				for (int i = 0; i < parents[current]; i++)
+				for (int i = 0; i < parents.size(); i++)
 				{
-					float oldDistance = weights[i];
+					float oldDistance = weights.at(i);
+					int next = parents.first;
 
-					if (oldDistance == nullopt || oldDistance > weights[i] + distances)
+					if (oldDistance == nullopt || oldDistance[next] > oldDistance[current] + weights.at(i))
 					{
-						weights[i] = weights[i] + distances;
-						weights[i] = i;
+						distances = weights.at(i) + distances;
+						weights.at(i) = i;
 						frontier.push(i, weights + distances);
 					}
 				}
